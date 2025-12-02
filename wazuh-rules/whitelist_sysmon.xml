@@ -1,0 +1,39 @@
+<group name="whitelist_sysmon">
+
+  <rule id="922300" level="0">
+    <if_group>sysmon</if_group>
+    <match>opera_autoupdate|opera|chrome|Google|brave|firefox|msedge|msedgewebview2</match>
+    <description>Whitelist: Navegadores (Ruido Geral)</description>
+  </rule>
+
+  <rule id="922301" level="0">
+    <if_group>sysmon</if_group>
+    <match>Cursor|Code|VSCode|warp|git|github|winget</match>
+    <description>Whitelist: Ferramentas de Dev</description>
+  </rule>
+
+  <rule id="922302" level="0">
+    <if_group>sysmon</if_group>
+    <match>OfficeClickToRun|OneDrive|OneDriveSetup</match>
+    <description>Whitelist: Office e OneDrive</description>
+  </rule>
+
+  <rule id="922303" level="0">
+    <if_group>sysmon</if_group>
+    <match>TiWorker|TrustedInstaller|wuauclt|MoUsoCoreWorker|msiexec</match>
+    <description>Whitelist: Windows System/Update</description>
+  </rule>
+
+  <rule id="922304" level="0">
+    <if_group>sysmon</if_group>
+    <match>PSScriptPolicyTest|powershell|pwsh</match>
+    <description>Whitelist: Ruido basico de Script</description>
+  </rule>
+
+  <rule id="922305" level="0">
+    <if_group>sysmon</if_group>
+    <match>RM|totvs|Kaspersky|avp|winbox|TeamViewer|AnyDesk</match>
+    <description>Whitelist: Apps Corporativos</description>
+  </rule>
+
+</group>
