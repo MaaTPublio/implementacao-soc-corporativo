@@ -44,6 +44,47 @@ Automação de resposta a incidentes de severidade crítica (Nível > 10):
 - `/wazuh-rules`: Regras XML personalizadas aplicadas em produção.
 - `/wazuh-config`: Trechos de configuração do `ossec.conf` e estratégias de distribuição.
 - `/networking`: Documentação das configurações de segurança de borda (pfSense).
+  
+##  Arquitetura do Ambiente
+```mermaid
+graph TD
+    subgraph Internet ["WAN / Internet"]
+        A[Atacante Externo] -- "Scan / Exploit" --> B(pfSense Firewall)
+    end
+
+    subgraph DMZ ["Borda de Segurança"]
+        B -- "Syslog (UDP 514)" --> C{Wazuh Manager}
+        B -- "Suricata Alerts" --> C
+        B -- "GeoIP Block" --> A
+    end
+
+    subgraph LAN ["Rede Corporativa (Segura)"]
+        C -- "Active Response (Block)" --> D[Windows Server]
+        C -- "Active Response (Block)" --> E[Workstations]
+        D -- "Sysmon Logs (EventChannel)" --> C
+        E -- "Sysmon Logs (EventChannel)" --> C
+    end
+
+    style C fill:#0078D4,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ff9900,stroke:#333,stroke-width:2px,color:#fff
+    style A fill:#cc0000,stroke:#333,stroke-width:2px,color:#fff
+```
+---
+## Dashboards e Evidências
+
+### Visão Geral do SOC 
+Painel de operações customizado para reduzir falsos positivos. Destaque para a detecção de incidentes reais e a atuação da **Resposta Ativa** (bloqueio automático) listada no top de eventos.
+
+![Dashboard](docs/dashboard.PNG)
+
+![mitre](docs/mitre.png)
+
+![Top Events](docs/top_events.PNG)
+
+> *Nota: Dados sensíveis como hostnames e IPs internos foram sanitizados para esta publicação.*
+
+> **Créditos:** O layout deste dashboard foi adaptado do projeto [OpenSoC](https://github.com/olibavictor/OpenSoC) de Victor Oliba.
+
 
 ---
 *Case de implementação real desenvolvido por  <a target="_blank" href="https://linkedin.com/in/mateuspublio"> Mateus Publio de Oliveira </a>*
