@@ -1,0 +1,218 @@
+<!-- pfSense Rules for Wazuh -->
+<!-- Location: /var/ossec/etc/rules/pfsense_rules.xml -->
+
+<group name="pfsense,firewall,">
+
+  <!-- Base rule for pfSense -->
+  <rule id="100100" level="0">
+    <decoded_as>pfsense</decoded_as>
+    <description>pfSense firewall messages grouped.</description>
+  </rule>
+
+  <!-- Firewall Block Rules -->
+  <rule id="100101" level="3">
+    <if_sid>100100</if_sid>
+    <action>block</action>
+    <description>pfSense: Firewall block</description>
+    <group>firewall_block,</group>
+  </rule>
+
+  <rule id="100102" level="5">
+    <if_sid>100101</if_sid>
+    <same_source_ip />
+    <frequency>10</frequency>
+    <timeframe>120</timeframe>
+    <description>pfSense: Multiple firewall blocks from same source IP</description>
+    <group>firewall_block,multiple_blocks,</group>
+  </rule>
+
+  <rule id="100103" level="8">
+    <if_sid>100101</if_sid>
+    <same_source_ip />
+    <frequency>50</frequency>
+    <timeframe>300</timeframe>
+    <description>pfSense: High volume of blocks from same source (possible port scan)</description>
+    <group>firewall_block,port_scan,</group>
+  </rule>
+
+  <!-- Firewall Pass Rules -->
+  <rule id="100110" level="2">
+    <if_sid>100100</if_sid>
+    <action>pass</action>
+    <description>pfSense: Firewall pass</description>
+    <group>firewall_pass,</group>
+  </rule>
+
+  <!-- DHCP Rules -->
+  <rule id="100200" level="3">
+    <decoded_as>pfsense-dhcpd</decoded_as>
+    <description>pfSense: DHCP message</description>
+    <group>dhcp,</group>
+  </rule>
+
+  <rule id="100201" level="3">
+    <if_sid>100200</if_sid>
+    <action>DHCPACK</action>
+    <description>pfSense: DHCP lease assigned</description>
+    <group>dhcp,dhcp_lease,</group>
+  </rule>
+
+  <rule id="100202" level="4">
+    <if_sid>100200</if_sid>
+    <action>DHCPNAK</action>
+    <description>pfSense: DHCP request denied</description>
+    <group>dhcp,dhcp_denied,</group>
+  </rule>
+
+  <!-- VPN Rules -->
+  <rule id="100300" level="3">
+    <decoded_as>pfsense-openvpn</decoded_as>
+    <description>pfSense: OpenVPN message</description>
+    <group>vpn,openvpn,</group>
+  </rule>
+
+  <rule id="100301" level="5">
+    <if_sid>100300</if_sid>
+    <match>Peer Connection Initiated</match>
+    <description>pfSense: OpenVPN successful connection</description>
+    <group>vpn,vpn_connection,authentication_success,</group>
+  </rule>
+
+  <rule id="100302" level="8">
+    <if_sid>100300</if_sid>
+    <match>TLS Error</match>
+    <description>pfSense: OpenVPN TLS error (possible attack)</description>
+    <group>vpn,vpn_error,authentication_failed,</group>
+  </rule>
+
+  <rule id="100303" level="10">
+    <if_sid>100300</if_sid>
+    <match>AUTH_FAILED</match>
+    <frequency>3</frequency>
+    <timeframe>300</timeframe>
+    <description>pfSense: Multiple OpenVPN authentication failures</description>
+    <group>vpn,authentication_failures,brute_force,</group>
+  </rule>
+
+  <!-- Authentication Rules -->
+  <rule id="100400" level="3">
+    <decoded_as>pfsense-auth</decoded_as>
+    <description>pfSense: Authentication message</description>
+    <group>authentication,</group>
+  </rule>
+
+  <rule id="100401" level="5">
+    <if_sid>100400</if_sid>
+    <match>Successful login</match>
+    <description>pfSense: Successful web interface login</description>
+    <group>authentication,authentication_success,</group>
+  </rule>
+
+  <rule id="100402" level="8">
+    <if_sid>100400</if_sid>
+    <match>authentication error</match>
+    <description>pfSense: Web interface authentication failed</description>
+    <group>authentication,authentication_failed,</group>
+  </rule>
+
+  <rule id="100403" level="10">
+    <if_sid>100402</if_sid>
+    <same_source_ip />
+    <frequency>5</frequency>
+    <timeframe>300</timeframe>
+    <description>pfSense: Multiple web interface authentication failures (brute force attempt)</description>
+    <group>authentication,authentication_failures,brute_force,</group>
+  </rule>
+
+  <!-- IDS/IPS Rules (Snort/Suricata) -->
+  <rule id="100500" level="0">
+    <decoded_as>pfsense-snort</decoded_as>
+    <description>pfSense: Snort IDS message</description>
+    <group>ids,snort,</group>
+  </rule>
+
+  <rule id="100501" level="7">
+    <if_sid>100500</if_sid>
+    <priority>3</priority>
+    <description>pfSense: Snort alert - Priority 3</description>
+    <group>ids,intrusion_detection,</group>
+  </rule>
+
+  <rule id="100502" level="10">
+    <if_sid>100500</if_sid>
+    <priority>2</priority>
+    <description>pfSense: Snort alert - Priority 2 (High)</description>
+    <group>ids,intrusion_detection,</group>
+  </rule>
+
+  <rule id="100503" level="12">
+    <if_sid>100500</if_sid>
+    <priority>1</priority>
+    <description>pfSense: Snort alert - Priority 1 (Critical)</description>
+    <group>ids,intrusion_detection,critical,</group>
+  </rule>
+
+  <rule id="100510" level="0">
+    <decoded_as>pfsense-suricata</decoded_as>
+    <description>pfSense: Suricata IDS message</description>
+    <group>ids,suricata,</group>
+  </rule>
+
+  <rule id="100511" level="7">
+    <if_sid>100510</if_sid>
+    <priority>3</priority>
+    <description>pfSense: Suricata alert - Priority 3</description>
+    <group>ids,intrusion_detection,</group>
+  </rule>
+
+  <rule id="100512" level="10">
+    <if_sid>100510</if_sid>
+    <priority>2</priority>
+    <description>pfSense: Suricata alert - Priority 2 (High)</description>
+    <group>ids,intrusion_detection,</group>
+  </rule>
+
+  <rule id="100513" level="12">
+    <if_sid>100510</if_sid>
+    <priority>1</priority>
+    <description>pfSense: Suricata alert - Priority 1 (Critical)</description>
+    <group>ids,intrusion_detection,critical,</group>
+  </rule>
+
+  <!-- Specific attack patterns -->
+  <rule id="100600" level="10">
+    <if_sid>100500,100510</if_sid>
+    <match>SQL Injection|sql injection</match>
+    <description>pfSense IDS: SQL Injection attempt detected</description>
+    <group>ids,attack,sql_injection,</group>
+  </rule>
+
+  <rule id="100601" level="10">
+    <if_sid>100500,100510</if_sid>
+    <match>XSS|Cross Site Scripting</match>
+    <description>pfSense IDS: Cross-Site Scripting attempt detected</description>
+    <group>ids,attack,xss,</group>
+  </rule>
+
+  <rule id="100602" level="12">
+    <if_sid>100500,100510</if_sid>
+    <match>Shellcode|shell code|exploit</match>
+    <description>pfSense IDS: Exploit/Shellcode detected</description>
+    <group>ids,attack,exploit,</group>
+  </rule>
+
+  <rule id="100603" level="8">
+    <if_sid>100500,100510</if_sid>
+    <match>port scan|portscan</match>
+    <description>pfSense IDS: Port scan detected</description>
+    <group>ids,recon,port_scan,</group>
+  </rule>
+
+  <rule id="100604" level="10">
+    <if_sid>100500,100510</if_sid>
+    <match>DDoS|denial of service</match>
+    <description>pfSense IDS: DDoS/DoS attack detected</description>
+    <group>ids,attack,dos,</group>
+  </rule>
+
+</group>

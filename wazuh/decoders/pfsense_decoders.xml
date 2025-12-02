@@ -1,0 +1,74 @@
+<!-- pfSense Decoders for Wazuh -->
+<!-- Location: /var/ossec/etc/decoders/pfsense_decoders.xml -->
+
+<!-- Base pfSense decoder -->
+<decoder name="pfsense">
+  <program_name>^filterlog</program_name>
+</decoder>
+
+<decoder name="pfsense-filterlog">
+  <parent>pfsense</parent>
+  <prematch>^</prematch>
+  <regex offset="after_parent">^(\d+),(\S+),(\d+),(\S+),(\S+),(\S+),(\S+),(\S+),(\S+),(\S+),(\d+),(\S+),(\d+),(\d+),(\d+),(\S+),(\d+),(\S+),(\S+),(\d+),(\S+),(\d+),(\S+),(\S+)</regex>
+  <order>rule_number,sub_rule,anchor,tracker,interface,reason,action,direction,ip_version,tos,ecn,ttl,id,offset,flags,protocol_id,protocol,length,src_ip,dst_ip,src_port,dst_port,data_length</order>
+</decoder>
+
+<!-- Decoder for pfSense DHCP -->
+<decoder name="pfsense-dhcpd">
+  <program_name>^dhcpd</program_name>
+</decoder>
+
+<decoder name="pfsense-dhcpd-action">
+  <parent>pfsense-dhcpd</parent>
+  <regex>^(\S+) on (\S+) to (\S+) \((\S+)\)</regex>
+  <order>action,interface,ip_address,mac_address</order>
+</decoder>
+
+<!-- Decoder for pfSense OpenVPN -->
+<decoder name="pfsense-openvpn">
+  <program_name>^openvpn</program_name>
+</decoder>
+
+<decoder name="pfsense-openvpn-connection">
+  <parent>pfsense-openvpn</parent>
+  <regex>(\S+)/(\S+):(\d+) (\w+)</regex>
+  <order>user,src_ip,src_port,action</order>
+</decoder>
+
+<!-- Decoder for pfSense PHP authentication -->
+<decoder name="pfsense-auth">
+  <program_name>^php-fpm</program_name>
+</decoder>
+
+<decoder name="pfsense-auth-result">
+  <parent>pfsense-auth</parent>
+  <regex>Successful login for user '(\S+)' from: (\S+)</regex>
+  <order>user,src_ip</order>
+</decoder>
+
+<decoder name="pfsense-auth-failed">
+  <parent>pfsense-auth</parent>
+  <regex>(\S+) authentication error for (\S+) from (\S+)</regex>
+  <order>auth_type,user,src_ip</order>
+</decoder>
+
+<!-- Decoder for Snort/Suricata IDS -->
+<decoder name="pfsense-snort">
+  <program_name>^snort</program_name>
+</decoder>
+
+<decoder name="pfsense-snort-alert">
+  <parent>pfsense-snort</parent>
+  <regex>\[(\d+):(\d+):(\d+)\] (.+) \[Classification: (.+)\] \[Priority: (\d+)\]</regex>
+  <order>generator_id,signature_id,signature_revision,alert_msg,classification,priority</order>
+</decoder>
+
+<decoder name="pfsense-suricata">
+  <program_name>^suricata</program_name>
+</decoder>
+
+<decoder name="pfsense-suricata-alert">
+  <parent>pfsense-suricata</parent>
+  <regex>\[(\d+):(\d+):(\d+)\] (.+) \[Classification: (.+)\] \[Priority: (\d+)\]</regex>
+  <order>generator_id,signature_id,signature_revision,alert_msg,classification,priority</order>
+</decoder>

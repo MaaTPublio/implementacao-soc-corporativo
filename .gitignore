@@ -1,0 +1,129 @@
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Credentials and secrets (NEVER COMMIT THESE!)
+*.key
+*.pem
+*.crt
+*.cert
+*.p12
+*.pfx
+*_rsa
+*_dsa
+*_ecdsa
+*_ed25519
+.env
+secrets/
+credentials/
+*.credentials
+*password*
+*secret*
+api_keys.txt
+
+# Wazuh specific
+wazuh-install-files.tar
+wazuh-passwords.txt
+*.tar.gz
+ossec.conf.backup.*
+
+# pfSense specific
+config-*.xml
+pfsense-backup-*.xml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+*.o
+*.a
+*.exe
+*.dll
+
+# Package files
+*.deb
+*.rpm
+*.msi
+*.dmg
+*.pkg
+
+# Compressed files
+*.zip
+*.tar
+*.gz
+*.bz2
+*.7z
+*.rar
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Reports and output
+reports/*.pdf
+reports/*.html
+*.csv
+output/
+
+# Test files
+test-results/
+coverage/
+.pytest_cache/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Ansible
+*.retry
+
+# Docker
+.dockerignore
+
+# Temporary directories
+tmp/
+temp/
+cache/
+
+# Custom ignores for this project
+# (Uncomment if you have these directories with sensitive data)
+# custom_rules_private/
+# private_configs/
