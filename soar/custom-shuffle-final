@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+# Integração Wazuh → Shuffle SOAR
+# Permissões: chown root:wazuh | chmod 750
+# Local: /var/ossec/integrations/custom-shuffle-final
+
+import sys
+import os
+
+# Execução via curl contornando validação de SSL em ambiente local
+command = f'curl -k -X POST -H "Content-Type: application/json" -d @{sys.argv[1]} {sys.argv[3]}'
+os.system(command)
+sys.exit(0)
