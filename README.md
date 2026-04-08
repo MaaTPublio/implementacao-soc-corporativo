@@ -23,35 +23,7 @@ O principal diferencial técnico desta implementação é o **pipeline SOAR de p
 
 ## Arquitetura do Ambiente
 
-```
-graph TD
-    subgraph Internet ["WAN / Internet"]
-        A[Atacante Externo] -- "Scan / Exploit" --> B(pfSense Firewall)
-    end
-
-    subgraph SOAR_Pipeline ["Pipeline SOAR (Resposta Automatizada)"]
-        C{Wazuh Manager} -- "Webhook (Nível 10+)" --> D[Shuffle SOAR]
-        D -- "SSH + pfctl" --> B
-    end
-
-    subgraph DMZ ["Borda de Segurança"]
-        B -- "Syslog (UDP 514)" --> C
-        B -- "Suricata Alerts" --> C
-        B -- "Tabela bloqueio_soar" --> A
-    end
-
-    subgraph LAN ["Rede Corporativa (Segura)"]
-        C -- "Active Response (Block)" --> E[Windows Server]
-        C -- "Active Response (Block)" --> F[Workstations]
-        E -- "Sysmon Logs (EventChannel)" --> C
-        F -- "Sysmon Logs (EventChannel)" --> C
-    end
-
-    style C fill:#0078D4,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#7B2FBE,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#ff9900,stroke:#333,stroke-width:2px,color:#fff
-    style A fill:#cc0000,stroke:#333,stroke-width:2px,color:#fff
-```
+<img width="1440" height="1312" alt="image" src="https://github.com/user-attachments/assets/8e1f2486-a8fa-48bd-b353-47c7e7d6aa60" />
 
 ---
 
